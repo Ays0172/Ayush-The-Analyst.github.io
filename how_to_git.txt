@@ -27,7 +27,9 @@ to finally publish our changes!
 git add (filename.extension)            # to add sepecific files
 git add .                               # to add all files
 
+8. To commit changes
+git commit -m "some message"        #"some message" = version control
 
-
-
+9. To make all changes to Push contenet (local --> remote)
+git push origin main
 

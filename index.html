@@ -1,0 +1,537 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Ayush Sood Analyst Portfolio</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Responsive and avatar */
+        @media (max-width: 900px) {
+            .modern-skill-dashboard { gap: 16px !important; }
+            .skill-box { min-width: 120px; max-width: 92vw;}
+            .animated-avatar { width: 44px;}
+        }
+        .animated-avatar {
+            width: 200px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 18px auto;
+            animation: floatAvatar 3.3s ease-in-out infinite alternate;
+            box-shadow: 0 2px 14px 0 #35f2ff25;
+        }
+        @keyframes floatAvatar { 0% { transform: translateY(0);} 100% { transform: translateY(-12px);} }
+        /* Modern Dashboard Layout & Skill Card */
+        .modern-skill-dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: stretch;
+            margin: 32px 0 20px 0;
+        }
+        .skill-box {
+            position: relative;
+            width: 220px;
+            background: #546178;
+            border-radius: 22px;
+            box-shadow: 6px 8px 0 0 #353e4a50, 0 2px 18px rgba(25,80,190,0.08);
+            color: #fff;
+            overflow: hidden;
+            padding: 26px 20px 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 320px;
+            cursor: pointer;
+            transition: transform 0.18s, box-shadow 0.22s;
+            z-index: 1;
+        }
+        .skill-box:hover {
+            transform: translateY(-6px) scale(1.035);
+            box-shadow: 0 8px 36px 0 #148dff2a, 0 2px 26px #00ffd933;
+        }
+        .skill-box::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0;
+            background: linear-gradient(120deg, #4fabe4 0%, #57ffd7 100%);
+            background-size: 200% 200%;
+            opacity: 0.35;
+            z-index: 0;
+            border-radius: 22px;
+            box-shadow: 0 -12px 28px 4px #ffffffa8 inset;
+            transition: width 2.2s cubic-bezier(0.23,1,0.32,1), background-position 1.3s;
+            animation: gradientMove 3.7s ease-in-out infinite alternate;
+        }
+        .skill-box.filled::before { width: var(--fill, 90%); }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        .skill-main-icon { width: 44px; margin-bottom: 9px; z-index: 1; }
+        .skill-label { color: #e6f7ff; font-weight: 800; font-size: 1.15em; margin-bottom: 8px; letter-spacing: 0.04em; z-index: 1; }
+        .skill-box ul { margin: 7px 0 8px 0; padding: 0; list-style: none; font-size: 1.07em; color: #c8e4f3; text-align: center; z-index: 1; }
+        .skill-box ul li { margin-bottom: 5px; display: flex; align-items: center; gap: 7px; justify-content: center; transition: color 0.13s, text-shadow 0.13s, font-weight 0.13s; }
+        .skill-box ul li:hover { color: #ffe487; font-weight: 700; text-shadow: 0 2px 7px #fff9e05a; cursor: pointer; }
+        .skill-percent { font-size: 1.2em; font-weight: 700; margin-top: 10px; color: #35ffe9; letter-spacing: 0.05em; z-index: 1; text-shadow: 0 2px 12px #00fff94a; }
+        .skill-box:active::after {
+            content: '';
+            position: absolute;
+            left: 50%; top: 50%;
+            width: 120px; height: 120px;
+            background: rgba(255,255,255,0.13);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.38s linear;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes ripple { to { transform: translate(-50%, -50%) scale(1.15); opacity: 0; } }
+        /* Skill Modal Styles */
+        .skill-modal { display: none; position: fixed; z-index: 99; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(16,27,38,0.58); align-items: center; justify-content: center; }
+        .skill-modal-content { background: #262f3a; border-radius: 18px; padding: 32px 34px 26px 34px; box-shadow: 0 12px 40px #00c3ff3d; color: #fff; max-width: 380px; min-width: 260px; text-align: center; position: relative; animation: fadeInModal 0.3s cubic-bezier(0.39, 0.58, 0.57, 1) 1; }
+        @keyframes fadeInModal { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .skill-modal-close { position: absolute; top: 12px; right: 18px; font-size: 2em; color: #3af9e7; cursor: pointer; font-weight: bold; }
+        /* Badge Popup */
+        #badge-popup { display: none; position: fixed; left: 50%; top: 18%; transform: translate(-50%, 0); z-index: 2000; background: #fffbe9; color: #26a99d; font-weight: bold; font-size: 1.45em; padding: 20px 44px; border-radius: 20px; box-shadow: 0 12px 52px #00ffe08a; border: 2px solid #bffde3; text-align: center; }
+    </style>
+</head>
+<body class="is-preload">
+
+<div id="wrapper" class="fade-in">
+
+<!-- Intro -->
+<div id="intro">
+    <h1>Ayush Sood <br />Analyst Portfolio</h1>
+    <h2 style="margin-top: 0.5em; font-weight:700;">
+        Data & Project Management Professional &bull; AI Analytics &bull; Digital Transformation
+    </h2>
+    <p style="font-size: 1.18em; color:#d0e5f7; max-width:800px; margin: 1.3em auto 1em auto;">
+        I help organizations turn data into action. With over five years of experience in analytics, AI-driven process automation, and project management,
+        I specialize in delivering measurable results—from cutting costs and boosting engagement to building dashboards and AI solutions that scale.
+        My work spans education, research, and manufacturing, blending technical skill with cross-functional leadership to drive business impact.
+    </p>
+    <div id="badge-popup" style="display:none;"></div>
+
+    <!-- Skill Gauges Dashboard (Single Instance) -->
+    <img src="images/ayush-avatar.png" class="animated-avatar" alt="Ayush Sood Avatar">
+
+    <div id="skills-dashboard" class="modern-skill-dashboard">
+        <div class="skill-box" data-skill="95" data-skillname="Python">
+            <img src="images/python.svg" class="skill-main-icon" alt="Python">
+            <div class="skill-label">Python</div>
+            <ul>
+                <li><span class="iconify" data-icon="simple-icons:pandas"></span> Pandas</li>
+                <li><span class="iconify" data-icon="simple-icons:numpy"></span> Numpy</li>
+                <li>Matplotlib</li>
+                <li>Seaborn</li>
+                <li>Scikit-learn</li>
+            </ul>
+           <!-- <span class="skill-percent">95%</span>  -->
+        </div>
+        <div class="skill-box" data-skill="92" data-skillname="Excel">
+            <img src="images/Excel.png" class="skill-main-icon" alt="Excel">
+            <div class="skill-label">Excel</div>
+            <ul>
+                <li>Pivot Tables</li>
+                <li>VLOOKUP/XLOOKUP</li>
+                <li>Power Query</li>
+                <li>Dashboards</li>
+                <li>Conditional Formatting</li>
+            </ul>
+            <!--<span class="skill-percent">92%</span> -->
+        </div>
+        <div class="skill-box" data-skill="88" data-skillname="SQL">
+            <img src="images/mysql.svg" class="skill-main-icon" alt="SQL">
+            <div class="skill-label">SQL</div>
+            <ul>
+                <li>Joins & Aggregation</li>
+                <li>Window Functions</li>
+                <li>CTEs & Subqueries</li>
+                <li>Data Cleaning</li>
+                <li>Query Optimization</li>
+            </ul>
+            <!--<span class="skill-percent">88%</span> -->
+        </div>
+        <div class="skill-box" data-skill="90" data-skillname="Tableau">
+            <img src="images/tableau.svg" class="skill-main-icon" alt="Tableau">
+            <div class="skill-label">Tableau</div>
+            <ul>
+                <li>Interactive Dashboards</li>
+                <li>Calculated Fields</li>
+                <li>Storytelling</li>
+                <li>Data Blending</li>
+                <li>Extracts & Publishing</li>
+            </ul>
+            <!--<span class="skill-percent">90%</span>-->
+        </div>
+        <div class="skill-box" data-skill="75" data-skillname="R">
+            <img src="images/r.svg" class="skill-main-icon" alt="R">
+            <div class="skill-label">R</div>
+            <ul>
+                <li>dplyr</li>
+                <li>ggplot2</li>
+                <li>tidyr</li>
+                <li>Statistical Modelling</li>
+            </ul>
+           <!-- <span class="skill-percent">75%</span> -->
+        </div>
+    </div>
+    <!-- End Skill Gauges Dashboard -->
+
+    <!-- Modal for skill details (hidden by default) -->
+    <div id="skill-modal" class="skill-modal">
+        <div class="skill-modal-content">
+            <span class="skill-modal-close">&times;</span>
+            <div id="modal-skill-title"></div>
+            <div id="modal-skill-description"></div>
+        </div>
+    </div>
+
+    <!-- Call-to-Action Buttons -->
+    <div style="margin: 1.2em auto 1.5em auto; display: flex; gap: 24px; justify-content: center;">
+        <a href="pdf\Resume_AyushSood.pdf.pdf" class="button primary" target="_blank">Download CV</a>
+        <a href="mailto:ays.sood@gmail.com" class="button">Contact Me</a>
+        <a href="https://linkedin.com/in/ayush-sood-65354483" class="button" target="_blank">LinkedIn</a>
+        <a href="#projects" class="button">View Projects</a>
+    </div>
+    <!-- Social Links -->
+    <div style="font-size: 1.1em; color:#fff; margin-bottom: 1.4em;">
+        <span style="margin-right:18px;"><b>GitHub:</b> <a href="https://github.com/Ays0172" style="color:#7bdfff;" target="_blank">@Ays0172</a></span>
+        <span><b>LinkedIn:</b> <a href="https://linkedin.com/in/ayush-sood-65354483" style="color:#7bdfff;" target="_blank">@AyushSood</a></span>
+    </div>
+</div>
+<!-- End Intro -->
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Ayush The Analyst</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li class="active"><a href="index.html">Dashboard</a></li>
+							<li><a href="Python.html">Python</a></li>
+							<li><a href="sql.html">SQL</a></li>
+							<li><a href="Excel.html">Excel</a></li>
+							<li><a href="PowerBI.html">PowerBI</a></li>
+							<li><a href="Tableau.html">Tableau</a></li>
+                            <li><a href="PHP.html">php</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://x.com/TodayIsABigDea1" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://www.facebook.com/chickloo" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="https://www.instagram.com/chicklu95/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="https://github.com/Ays0172" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Featured Post -->
+							<article class="post featured">
+								<header class="major">
+									<h2><a href="https://github.com/Ays0172/employee-data-cleaning"> Employee Data Cleaning using Python </a></h2>
+									<div style="max-width: 720px; margin: 0 auto; font-size: 1.15em; color: #bc4c4c; background: #fff; padding: 90px 80px 70px 32px; border-radius: 14px;">
+										<div style="text-align: justify;">
+											<strong style="font-size:1.09em;">Overview:</strong><br>
+											Tackled a real-world HR dataset of 15,000 employees, focusing on transforming messy, inconsistent raw data into a clean, analytics-ready format. Using Python, pandas, and numpy, I handled missing values, fixed data types, removed duplicates, addressed outliers, and ensured robust salary data. The result: a reliable, high-quality dataset ready for insightful HR analytics and machine learning.
+										</div>
+
+										<div style="margin-top: 18px; text-align: justify;">
+											<strong style="font-size:1.09em;">Key Steps:</strong>
+											<ul style="margin-top: 6px; margin-bottom: 12px;">
+											<li>Imported, audited, and profiled raw CSV data</li>
+											<li>Fixed inconsistent data types and handled missing values smartly</li>
+											<li>Removed duplicates and corrected impossible values (e.g., negative salaries)</li>
+											<li>Detected and removed outliers for salary and other numeric fields</li>
+											<li>Delivered a clean, well-structured dataset suitable for dashboards, reporting, or AI models</li>
+											</ul>
+										</div>
+
+										<div style="text-align: justify;">
+											<strong style="font-size:1.09em;">Impact:</strong><br>
+											Enabled the HR team to trust their analytics, automate reporting, and extract actionable workforce insights—while saving countless analyst hours on manual data fixes.
+										</div>
+										</div>
+
+								</header>
+								<a href="https://github.com/Ays0172/employee-data-cleaning" class="image main"><img src="images\employee-directory.png" alt="" /></a>
+								<ul class="actions special">
+									<li><a href="https://github.com/Ays0172/employee-data-cleaning" class="button large">View Project</a></li>
+								</ul>
+							</article>
+
+						<!-- Posts -->
+							<section class="posts">
+                                <article>
+									<header>
+										
+										<h2><a href="https://github.com/Ays0172/Learning-Pandas-for-Data-Science">Learning Pandas for Data Science</a></h2>
+									</header>
+									<a href="https://github.com/Ays0172/Learning-Pandas-for-Data-Science" class="image fit"><img src="images/Python_for_Data_Science.png" alt="" /></a>
+									<p>Tackled a real-world HR dataset of 15,000 employees, focusing on transforming messy, inconsistent raw data into a clean, analytics-ready format. Using Python, pandas, and numpy, I handled missing values, fixed data types, removed duplicates, addressed outliers, and ensured robust salary data. The result: a reliable, high-quality dataset ready for insightful HR analytics and machine learning.</p>
+                                    <p>Key Steps:</p>
+                                    <p>
+                                        <li>Imported, audited, and profiled raw CSV data</li>
+                                        <li>Fixed inconsistent data types and handled missing values smartly</li>
+                                        <li>Removed duplicates and corrected impossible values (e.g., negative salaries)</li>
+                                        <li>Detected and removed outliers for salary and other numeric fields</li>
+                                        <li>Delivered a clean, well-structured dataset suitable for dashboards, reporting, or AI models</li>
+                                    </p>
+									<ul class="actions special">
+										<li><a href="https://github.com/Ays0172/Learning-Pandas-for-Data-Science" class="button">View Project</a></li>									                                         
+                                    </ul>
+                                    </ul>
+								</article>
+
+                                <article>
+									<header>
+										
+										<h2><a href="https://github.com/Ays0172/Learning-Numpy-for-Data-Science">Learning Numpy for Data Science</a></h2>
+									</header>
+									<a href="https://github.com/Ays0172/Learning-Numpy-for-Data-Science" class="image fit"><img src="images\Numpy_1.png" alt="" /></a>
+									<p>Mastered the fundamentals of NumPy by working with real-world numerical datasets, focusing on efficient data manipulation and computation. Leveraged NumPy arrays to accelerate calculations, perform complex transformations, and enable high-performance analytics—laying a strong foundation for scientific computing and machine learning in Python.</p>
+                                    <p>Key Steps:</p>
+                                    <p>
+                                        <li>Loaded and explored numerical data using NumPy arrays</li>
+                                        <li>Applied array slicing, indexing, and reshaping for flexible data manipulation</li>
+                                        <li>Performed statistical analysis and aggregations directly on arrays</li>
+                                        <li>Implemented mathematical operations and vectorized computations for speed</li>
+                                        <li>Utilized broadcasting and advanced functions for complex data processing tasks</li>
+                                    </p>
+									<ul class="actions special">
+										<li><a href="https://github.com/Ays0172/Learning-Numpy-for-Data-Science" class="button">View Project</a></li>									                                         
+                                    </ul>
+                                    </ul>
+								</article>
+
+
+
+								<article>
+									<header>
+										
+										<h2><a href="https://github.com/Ays0172/ticketing-system-php-">Ticketing System using PHP on XAMPP server</a></h2>
+									</header>
+									<a href="https://github.com/Ays0172/ticketing-system-php-" class="image fit"><img src="images\Ticket.png" alt="" /></a>
+									<p>A simple PHP & MySQL ticketing system for helpdesks and IT support. Submit, track, and manage support tickets via your browser. Easy setup—just run on XAMPP. Includes admin panel, ticket status, and user management. Perfect for students or small teams.</p>
+									<ul class="actions special">
+										<li><a href="https://github.com/Ays0172/ticketing-system-php-" class="button">View Project</a></li>
+									</ul>
+								</article>
+
+								<article>
+									<header>
+										
+										<h2><a href="https://github.com/Ays0172/blackcoffer-web-data-wrangling">Blackcoffer Web Data Wrangling & Cleaning</a></h2>
+									</header>
+									<a href="https://github.com/Ays0172/blackcoffer-web-data-wrangling" class="image fit"><img src="images\PythonDataWranglingcompressed1-(1).webp" alt="" /></a>
+									<p>Extracted and cleaned textual information from Blackcoffer project web pages using Python web scraping techniques. Automated the process of crawling, parsing HTML, and transforming unstructured content into structured, analytics-ready datasets. This project enabled efficient content analysis, streamlined data preparation for NLP tasks, and provided clean data for deeper business insights.</p>
+									<ul class="actions special">
+										<li><a href="https://github.com/Ays0172/blackcoffer-web-data-wrangling" class="button">Full Story</a></li>
+									</ul>
+								</article>
+
+
+							</section>
+
+						<!-- Footer -->
+							<footer>
+								<div class="pagination">
+									<!--<a href="#" class="previous">Prev</a>-->
+									<a href="#" class="page active">1</a>
+									<a href="#" class="page">2</a>
+									<a href="#" class="page">3</a>
+									<span class="extra">&hellip;</span>
+									<a href="#" class="page">8</a>
+									<a href="#" class="page">9</a>
+									<a href="#" class="page">10</a>
+									<a href="#" class="next">Next</a>
+								</div>
+							</footer>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<form action="https://formspree.io/f/mqabvvvz" method="POST">
+								<div class="fields">
+									<div class="field">
+										<label for="name">Name</label>
+										<input type="text" name="name" id="name" />
+									</div>
+									<div class="field">
+										<label for="email">Email</label>
+										<input type="text" name="email" id="email" />
+									</div>
+									<div class="field">
+										<label for="message">Message</label>
+										<textarea name="message" id="message" rows="3"></textarea>
+									</div>
+								</div>
+								<ul class="actions">
+									<li><input type="submit" value="Send Message" /></li>
+								</ul>
+							</form>
+						</section>
+						<section class="split contact">
+							<section class="alt">
+								<h3>Address</h3>
+								<p>Rajouri Garden<br />
+								New Delhi, India,<br> 110027</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p><a href="#">7888523698</a></p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p><a href="#">ays.sood@gmail.com</a></p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://x.com/TodayIsABigDea1" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="https://www.facebook.com/chickloo" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="https://www.instagram.com/chicklu95/" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="https://github.com/Ays0172" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+
+
+<div id="copyright">
+    <ul><li>&copy; Ayush Sood</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+</div>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+// Skill bar animation
+window.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.skill-box').forEach(function(box) {
+        let percent = box.getAttribute('data-skill');
+        box.style.setProperty('--fill', percent + '%');
+        setTimeout(() => {
+            box.classList.add('filled');
+        }, 180);
+    });
+});
+
+// Modal for skill details + gamification
+const modal = document.getElementById('skill-modal');
+const modalTitle = document.getElementById('modal-skill-title');
+const modalDesc = document.getElementById('modal-skill-description');
+const skillDetails = {
+    'Python': 'Used extensively for data wrangling, automation, and analytics. Projects include ETL pipelines and custom AI models.',
+    'Excel': 'Advanced Excel for dashboarding and automating financial/process analysis with VBA and Power Query.',
+    'SQL': 'Designed optimized queries and databases. Automated reporting and enabled data-driven decision-making.',
+    'Tableau': 'Built executive dashboards with advanced calculated fields and storytelling visuals.',
+    'R': 'Applied for statistical modeling and interactive analytics in academic and research settings.'
+};
+document.querySelectorAll('.skill-box').forEach(box => {
+    box.addEventListener('click', function(e) {
+        const skill = this.getAttribute('data-skillname');
+        modalTitle.innerText = skill;
+        modalDesc.innerText = skillDetails[skill] || '';
+        modal.style.display = 'flex';
+        this.classList.add('visited');
+        checkBadge();
+        e.stopPropagation();
+    });
+});
+document.querySelector('.skill-modal-close').onclick = function() {
+    modal.style.display = 'none';
+};
+window.onclick = function(event) {
+    if (event.target == modal) modal.style.display = "none";
+};
+function checkBadge() {
+    let all = document.querySelectorAll('.skill-box').length;
+    let visited = document.querySelectorAll('.skill-box.visited').length;
+    if (visited === all) {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.36 } });
+        showBadge();
+    }
+}
+function showBadge() {
+    let badge = document.getElementById('badge-popup');
+    if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'badge-popup';
+        badge.innerHTML = '<span style="font-size:2.2em; vertical-align:middle;">🏆</span> <br>Data Ace Badge Unlocked!';
+        document.body.appendChild(badge);
+    }
+    badge.style.display = 'block';
+    setTimeout(() => { badge.style.display = 'none'; }, 3200);
+}
+</script>
+
+<script>
+// How many posts per page
+const postsPerPage = 4;
+
+// Get all article elements within .posts
+const postsSection = document.querySelector('.posts');
+const articles = postsSection.querySelectorAll('article');
+
+// Pagination container
+const pagination = document.querySelector('.pagination');
+
+// Helper to show page N
+function showPage(page) {
+    // Hide all articles
+    articles.forEach(a => a.style.display = 'none');
+    // Show only articles for this page
+    const start = (page - 1) * postsPerPage;
+    const end = start + postsPerPage;
+    for (let i = start; i < end && i < articles.length; i++) {
+        articles[i].style.display = '';
+    }
+}
+
+// Helper to build pagination links
+function buildPagination() {
+    if (!pagination) return;
+    pagination.innerHTML = '';
+    const totalPages = Math.ceil(articles.length / postsPerPage);
+    for (let i = 1; i <= totalPages; i++) {
+        const pageLink = document.createElement('a');
+        pageLink.href = '#';
+        pageLink.className = 'page' + (i === 1 ? ' active' : '');
+        pageLink.textContent = i;
+        pageLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.pagination .page').forEach(a => a.classList.remove('active'));
+            pageLink.classList.add('active');
+            showPage(i);
+        });
+        pagination.appendChild(pageLink);
+    }
+    // Optionally, add next/prev buttons here
+}
+
+// Initialize
+buildPagination();
+showPage(1);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+1. To get the link to repository
+Code --> copy (HTTPS) link
+
+2. to get a clone of your repository
+git clone [copy HTTS link]
+
+3. To change director
+cd [repository name]                #change directory
+
+4.to see all file
+ls                                   #list files (normal files)
+
+5. to view all (Hidden files)
+ls -Force/ ls -a
+
+6. To track any changes
+git status
+
+# After making any changes to the file, we need to do 2 steps
+i) Add
+ii) Commit
+to finally publish our changes!
+
+# U = Untrack file      M = Modified file       S = staged(Ready to be committed)
+
+7. To add changes
+git add (filename.extension)            # to add sepecific files
+git add .                               # to add all files
+
+
+
+
+
